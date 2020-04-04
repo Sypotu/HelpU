@@ -52,7 +52,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
     final TagService tag_service = TagService();
 
     return Scaffold(
-      appBar: AppBar(title: Text('WeHelp')),
+      appBar: AppBar(title: Text('Create a Task')),
       body: Builder(
         builder: (context) => Form(
           key: _formKey,

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import 'task.dart';
 
 class TaskDetailPage extends StatelessWidget {
   final Task task;
 
   TaskDetailPage(this.task);
+
+  var format = DateFormat("EEE MMMM d', at' HH.mm");
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class TaskDetailPage extends StatelessWidget {
                   Icon(Icons.access_time),
                   Padding(padding: EdgeInsets.only(right: 4.0),),
                   Text(
-                    "Sun April 5, at 16.00",
+                    format.format(task.timestamp.toDate()),
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize:16,

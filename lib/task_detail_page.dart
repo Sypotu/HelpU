@@ -17,7 +17,7 @@ class TaskDetailPage extends StatelessWidget {
 
   var format = DateFormat("EEE MMMM d', at' HH.mm");
 
-  List<Tag> _selectedTags = [Tag(id:"test",text:"test")];
+  List<Tag> _selectedTags = [Tag(id: "test", text: "delivery")];
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class TaskDetailPage extends StatelessWidget {
         right: true,
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child:      Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Divider(
@@ -44,20 +44,20 @@ class TaskDetailPage extends StatelessWidget {
                   fontSize: 24,
                   fontWeight: FontWeight.w500,
                 ),
-
               ),
-              SizedBox(height: 10),
-
+              SizedBox(height: 20),
 
               Row(
                 children: <Widget>[
                   Icon(Icons.access_time),
-                  Padding(padding: EdgeInsets.only(right: 4.0),),
+                  Padding(
+                    padding: EdgeInsets.only(right: 4.0),
+                  ),
                   Text(
                     format.format(task.timestamp.toDate()),
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize:16,
+                      fontSize: 16,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
@@ -67,12 +67,14 @@ class TaskDetailPage extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Icon(Icons.location_on),
-                  Padding(padding: EdgeInsets.only(right: 4.0),),
+                  Padding(
+                    padding: EdgeInsets.only(right: 4.0),
+                  ),
                   Text(
                     "Tegelbacken 22a, Stockholm, Serige",
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize:16,
+                      fontSize: 16,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
@@ -87,11 +89,8 @@ class TaskDetailPage extends StatelessWidget {
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                 ),
-
               ),
               SizedBox(height: 10),
-
-
 
               Text(
                 task.description,
@@ -108,7 +107,6 @@ class TaskDetailPage extends StatelessWidget {
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                 ),
-
               ),
               SizedBox(height: 10),
 
@@ -117,7 +115,9 @@ class TaskDetailPage extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Icon(Icons.person),
-                  Padding(padding: EdgeInsets.only(right: 4.0),),
+                  Padding(
+                    padding: EdgeInsets.only(right: 4.0),
+                  ),
                   Text(
                     "Anna Bella",
                     textAlign: TextAlign.left,
@@ -133,7 +133,9 @@ class TaskDetailPage extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Icon(Icons.phone_iphone),
-                  Padding(padding: EdgeInsets.only(right: 4.0),),
+                  Padding(
+                    padding: EdgeInsets.only(right: 4.0),
+                  ),
                   Text(
                     "+46 767891221",
                     textAlign: TextAlign.left,
@@ -147,46 +149,54 @@ class TaskDetailPage extends StatelessWidget {
 
               SizedBox(height: 24),
               Text(
-                'Tags',
+                'Category',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                 ),
-
               ),
               Wrap(
-              //  alignment: widget.wrapConfiguration.alignment,
-           //     crossAxisAlignment: widget.wrapConfiguration.crossAxisAlignment,
-           //     runAlignment: widget.wrapConfiguration.runAlignment,
-           //     runSpacing: widget.wrapConfiguration.runSpacing,
-           //     spacing: widget.wrapConfiguration.spacing,
-           //     direction: widget.wrapConfiguration.direction,
-           //     textDirection: widget.wrapConfiguration.textDirection,
-          //      verticalDirection: widget.wrapConfiguration.verticalDirection,
+                //  alignment: widget.wrapConfiguration.alignment,
+                //     crossAxisAlignment: widget.wrapConfiguration.crossAxisAlignment,
+                //     runAlignment: widget.wrapConfiguration.runAlignment,
+                //     runSpacing: widget.wrapConfiguration.runSpacing,
+                //     spacing: widget.wrapConfiguration.spacing,
+                //     direction: widget.wrapConfiguration.direction,
+                //     textDirection: widget.wrapConfiguration.textDirection,
+                //      verticalDirection: widget.wrapConfiguration.verticalDirection,
                 children: _selectedTags.map<Widget>((item) {
                   return Chip(
                     label: Text(item.text),
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.amber,
                     labelStyle: TextStyle(color: Colors.white),
                   );
                 }).toList(),
               ),
               SizedBox(height: 24),
-              SizedBox(height: 24),
+
               new Container(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: new RaisedButton(
-                    child: const Text('I want to help'),
-                    //                onPressed: _submitForm,
-                  )),
+                    color: Colors.indigoAccent,
+                    child: const Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0),
+                      child: Text(
+                          'I would like to help :)',
 
+                        style: TextStyle(
+                          color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      ),
+
+                    ),
+                    onPressed: () {},
+                  )),
             ],
           ),
         ),
-
-
-
-
       ),
     );
   }

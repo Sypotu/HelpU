@@ -59,23 +59,33 @@ class CreateTaskPageState extends State<CreateTaskPage> {
           key: _formKey,
           autovalidate: true,
           child: new ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             children: <Widget>[
+              SizedBox(height: 20),
               new TextFormField(
                 decoration: const InputDecoration(
                   icon: const Icon(Icons.title),
-                  hintText: 'Enter the task title',
+                  hintText: '',
                   labelText: 'Title',
+                ),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w300,
                 ),
                 inputFormatters: [new LengthLimitingTextInputFormatter(30)],
                 validator: (val) => val.isEmpty ? 'Title is required' : null,
                 //onSaved: (val) => newContact.name = val,
               ),
+              SizedBox(height: 12),
               new TextFormField(
                 decoration: const InputDecoration(
                   icon: const Icon(Icons.description),
-                  hintText: 'Enter the task description',
+                  hintText: '',
                   labelText: 'Description',
+                ),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w300,
                 ),
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
@@ -84,11 +94,17 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                     val.isEmpty ? 'Description is required' : null,
                 //onSaved: (val) => newContact.name = val,
               ),
+
+              SizedBox(height: 12),
               new DateTimeField(
                 decoration: const InputDecoration(
                   icon: const Icon(Icons.access_time),
-                  hintText: 'Enter the start time',
-                  labelText: 'Start time',
+                  hintText: '',
+                  labelText: 'Starting time',
+                ),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w300,
                 ),
                 format: format,
                 onShowPicker: (context, currentValue) async {
@@ -159,40 +175,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
 ////                  : 'Please enter a valid email address',
 ////              onSaved: (val) => newContact.email = val,
 //            ),
-              new FormField<String>(
-                builder: (FormFieldState<String> state) {
-                  return InputDecorator(
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.category),
-                      labelText: 'Category',
-                      errorText: state.hasError ? state.errorText : null,
-                    ),
-                    isEmpty: _categories == '',
-                    child: new DropdownButtonHideUnderline(
-                      child: new DropdownButton<String>(
-                        value: _category,
-                        isDense: true,
-                        onChanged: (String newValue) {
-                          setState(() {
-                            //newContact.favoriteColor = newValue;
-                            _category = newValue;
-                            state.didChange(newValue);
-                          });
-                        },
-                        items: _categories.map((String value) {
-                          return new DropdownMenuItem<String>(
-                            value: value,
-                            child: new Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  );
-                },
-                validator: (val) {
-                  return val != '' ? null : 'Please select a category';
-                },
-              ),
+              SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.only(left: 36.0),
                 child: FlutterTagging<Tag>(
@@ -206,9 +189,13 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                         border: InputBorder.none,
                         //filled: true,
                         //fillColor: Colors.grey.withAlpha(30),
-                        hintText: 'Search Tag',
-                        labelText: ' + Add Tag',
-                        labelStyle: TextStyle(color: Colors.green)),
+                        hintText: 'Type to search a category',
+                        hintStyle: TextStyle(
+                          fontSize: 16,fontWeight: FontWeight.w300),
+                        labelText: ' + Add Task Categories',
+                        labelStyle: TextStyle(color: Colors.indigoAccent,
+                      fontSize: 16,)),
+
                   ),
                   findSuggestions: tag_service.getTags,
                   additionCallback: (value) {
@@ -234,24 +221,41 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                           fontSize: 14.0,
                           fontWeight: FontWeight.w300,
                         ),
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.indigoAccent,
                       ),
                     );
                   },
                   configureChip: (tag) {
                     return ChipConfiguration(
                       label: Text(tag.text),
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.amber,
                       labelStyle: TextStyle(color: Colors.white),
                       deleteIconColor: Colors.white,
                     );
                   },
                 ),
               ),
+
               new Container(
-                  padding: const EdgeInsets.only(top: 20.0),
+                  padding: const EdgeInsets.only(top: 24.0),
                   child: new RaisedButton(
-                    child: const Text('Submit'),
+                    color: Colors.indigoAccent,
+                    child: const Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0),
+                      child: Text(
+                        'Create',
+
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+
+                    ),
+
+
                     onPressed: () {
                       // Validate returns true if the form is valid, or false
                       // otherwise.
@@ -259,7 +263,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                         print(_selectedTags);
                         // If the form is valid, display a Snackbar.
                         Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text('Processing Data')));
+                            SnackBar(content: Text('Not implemented')));
                       }
                     },
                     //                onPressed: _submitForm,

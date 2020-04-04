@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hack/profile_tab.dart';
 import 'package:intl/intl.dart';
@@ -17,10 +18,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WeHelp',
+      title: 'HelpU',
       theme: ThemeData(
         // Use the green theme for Material widgets.
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.indigo,
       ),
       //darkTheme: ThemeData.dark(),
       initialRoute: '/',
@@ -46,16 +47,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('WeHelp')),
+      appBar: AppBar(title: Text('HelpU')),
       drawer: Drawer(
           child: ListView(
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                child: Text('WeHelp'),
+                child: Image(image: AssetImage("assets/logo1.png"),),
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: Colors.indigo,
                 ),
               ),
               ListTile(
@@ -108,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.pushNamed(context, '/new_task');
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.indigoAccent,
       ),
     );
   }
@@ -170,14 +171,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     data: IconThemeData(color: color),
                     child: Icon(Icons.person_pin, size: 52),
                   ),
-                  SizedBox(width: 16),
+                  SizedBox(width: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Padding(padding: EdgeInsets.only(top: 6.0),),
                       Text(
                         task.title,
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -192,11 +194,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             format.format(task.timestamp.toDate()),
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.w200,
                             ),
                           ),
-                          SizedBox(width: 32),
+                          SizedBox(width: 16),
                           Icon(Icons.location_on),
                           Padding(
                             padding: EdgeInsets.only(right: 4.0),
@@ -205,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             "1.2km away",
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.w200,
                             ),
                           ),
@@ -215,14 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ],
               ),
-              SizedBox(height: 24),
-              Text(
-                task.description,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
+
               SizedBox(height: 10),
             ]),
           ),

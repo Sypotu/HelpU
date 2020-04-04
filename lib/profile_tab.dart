@@ -20,13 +20,13 @@ class ProfileTab extends StatelessWidget {
               child: Center(
                 child: Icon(
                 Icons.person,
-                  size: 36.0,
+                  size: 60.0,
                 ),
               ),
             ),
             PreferenceCard(
               header: 'MY TIME AVAILIBILITY',
-              content: '🤘🏾',
+              content: '⏰',
               preferenceChoices: [
                 '07:00 - 09:00',
                 '09:00 - 12:00',
@@ -38,7 +38,7 @@ class ProfileTab extends StatelessWidget {
             ),
             PreferenceCard(
               header: 'MY EQUIPMENT',
-              content: '🚀',
+              content: '🚗',
               preferenceChoices: [
                 'Car',
                 'First Aid Box',
@@ -123,12 +123,12 @@ class PreferenceCard extends StatelessWidget {
   @override
   Widget build(context) {
     return PressableCard(
-      color: Colors.green,
+      color: Colors.amber,
       flattenAnimation: AlwaysStoppedAnimation(0),
       child: Stack(
         children: [
           Container(
-            height: 120,
+            height: 100,
             width: 250,
             child: Padding(
               padding: EdgeInsets.only(top: 40),
@@ -183,7 +183,7 @@ class LogOutButton extends StatelessWidget {
 
   Widget _buildAndroid(BuildContext context) {
     return RaisedButton(
-      child: Text('LOG OUT', style: TextStyle(color: Colors.red)),
+      child: Text('LOG OUT', style: TextStyle(color: Colors.indigoAccent)),
       onPressed: () {
         // You should do something with the result of the dialog prompt in a
         // real app but this is just a demo.

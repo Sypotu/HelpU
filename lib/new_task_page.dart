@@ -31,7 +31,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
   final List<String> _categories = <String>['', 'delivery', 'social', 'other'];
   String _category = '';
   List<Tag> _selectedTags;
-  final format = DateFormat("EEEE d MMMM 'at' HH:mm");
+  final format = DateFormat("EEE MMMM d', at' HH.mm");
 
   @override
   void initState() {

@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import 'new_task_page.dart';
 import 'task.dart';
 import 'task_detail_page.dart';
+import 'dart:math';
 
 void main() => runApp(MyApp());
 
@@ -75,6 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final task = Task.fromSnapshot(data);
 
+    var format = DateFormat("EEE MMMM d', at' HH.mm");
+
     return Padding(
       key: ValueKey(task.title),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -83,19 +86,80 @@ class _MyHomePageState extends State<MyHomePage> {
           border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(5.0),
         ),
-        child: ListTile(
-            title: Text(task.title),
-            //trailing: Text(task.vote.toString()),
-            //onTap: () => task.reference.updateData({'vote': FieldValue.increment(1)}),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                '/task_detail',
-                arguments: task,
-              );
-            }),
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/task_detail',
+              arguments: task,
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.all(12.0),
+            color: Colors.primaries[Random().nextInt(Colors.primaries.length)].withOpacity(0.2),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    task.title,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: <Widget>[
+                      Icon(Icons.access_time),
+                      Padding(
+                        padding: EdgeInsets.only(right: 4.0),
+                      ),
+                      Text(format.format(task.timestamp.toDate()),
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      SizedBox(width: 32),
+                      Icon(Icons.location_on),
+                      Padding(
+                        padding: EdgeInsets.only(right: 4.0),
+                      ),
+                      Text(
+                        "1.2km away",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24),
+                  Text(
+                    task.description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w100,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                ]),
+          ),
+        ),
+//        child: ListTile(
+//            title: Text(task.title),
+//            //trailing: Text(task.vote.toString()),
+//            //onTap: () => task.reference.updateData({'vote': FieldValue.increment(1)}),
+//            onTap: () {
+//              Navigator.pushNamed(
+//                context,
+//                '/task_detail',
+//                arguments: task,
+//              );
+//            }),
       ),
     );
   }
 }
-

@@ -93,20 +93,22 @@ class TaskDetailPage extends StatelessWidget {
         title: Text(task.title),
       ),
       body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Go back!'),
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(task.title),
+            Text(task.description),
+          ],
         ),
       ),
-    );
+      );
   }
 }
 
 class Task {
   final String id;
   final String title;
+  final String description;
   final int vote;
   final DocumentReference reference;
 
@@ -116,6 +118,7 @@ class Task {
         assert(reference.documentID != null),
         title = map['title'],
         vote = map['vote'],
+        description = map['description'],
         id = reference.documentID;
 
   Task.fromSnapshot(DocumentSnapshot snapshot)

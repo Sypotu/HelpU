@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(),
-        '/task_detail': (context) => TaskDetailPage(),
+        '/task_detail': (context) => TaskDetailPage(ModalRoute.of(context).settings.arguments),
       },
     );
   }
@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Navigator.pushNamed(
               context,
               '/task_detail',
-              arguments: task.id,
+              arguments: task,
             );
           }
         ),
@@ -81,21 +81,23 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class TaskDetailPage extends StatelessWidget {
+  final Task task;
+
+  TaskDetailPage (this.task);
+
   @override
   Widget build(BuildContext context) {
-    final String task_id = ModalRoute.of(context).settings.arguments;
-    print(task_id);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Task Detail " + task_id),
-        //title: Text("Task Detail "),
+        title: Text(task.title),
       ),
       body: Center(
         child: RaisedButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('Go back!'+ task_id),
+          child: Text('Go back!'),
         ),
       ),
     );

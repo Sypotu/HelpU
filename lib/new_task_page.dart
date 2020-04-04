@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:flutter_tagging/flutter_tagging.dart';
+import 'flutter_tag/tagging.dart';
+import 'flutter_tag/taggable.dart';
+import 'flutter_tag/configurations.dart';
+import 'package:flutter_typeahead_web/flutter_typeahead.dart';
+
+import 'task.dart';
 
 // Create a Form widget.
 class CreateTaskPage extends StatefulWidget {
@@ -47,61 +52,62 @@ class CreateTaskPageState extends State<CreateTaskPage> {
     final TagService tag_service = TagService();
 
     return Scaffold(
-      appBar: AppBar(title: Text('COmunity')),
-      body: Form(
-        key: _formKey,
-        autovalidate: true,
-        child: new ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          children: <Widget>[
-            new TextFormField(
-              decoration: const InputDecoration(
-                icon: const Icon(Icons.title),
-                hintText: 'Enter the task title',
-                labelText: 'Title',
+      appBar: AppBar(title: Text('WeHelp')),
+      body: Builder(
+        builder: (context) => Form(
+          key: _formKey,
+          autovalidate: true,
+          child: new ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            children: <Widget>[
+              new TextFormField(
+                decoration: const InputDecoration(
+                  icon: const Icon(Icons.title),
+                  hintText: 'Enter the task title',
+                  labelText: 'Title',
+                ),
+                inputFormatters: [new LengthLimitingTextInputFormatter(30)],
+                validator: (val) => val.isEmpty ? 'Title is required' : null,
+                //onSaved: (val) => newContact.name = val,
               ),
-              inputFormatters: [new LengthLimitingTextInputFormatter(30)],
-              validator: (val) => val.isEmpty ? 'Title is required' : null,
-              //onSaved: (val) => newContact.name = val,
-            ),
-            new TextFormField(
-              decoration: const InputDecoration(
-                icon: const Icon(Icons.description),
-                hintText: 'Enter the task description',
-                labelText: 'Description',
+              new TextFormField(
+                decoration: const InputDecoration(
+                  icon: const Icon(Icons.description),
+                  hintText: 'Enter the task description',
+                  labelText: 'Description',
+                ),
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                inputFormatters: [new LengthLimitingTextInputFormatter(500)],
+                validator: (val) =>
+                    val.isEmpty ? 'Description is required' : null,
+                //onSaved: (val) => newContact.name = val,
               ),
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              inputFormatters: [new LengthLimitingTextInputFormatter(500)],
-              validator: (val) =>
-                  val.isEmpty ? 'Description is required' : null,
-              //onSaved: (val) => newContact.name = val,
-            ),
-            new DateTimeField(
-              decoration: const InputDecoration(
-                icon: const Icon(Icons.access_time),
-                hintText: 'Enter the start time',
-                labelText: 'Start time',
+              new DateTimeField(
+                decoration: const InputDecoration(
+                  icon: const Icon(Icons.access_time),
+                  hintText: 'Enter the start time',
+                  labelText: 'Start time',
+                ),
+                format: format,
+                onShowPicker: (context, currentValue) async {
+                  final date = await showDatePicker(
+                      context: context,
+                      firstDate: currentValue ?? DateTime.now(),
+                      initialDate: currentValue ?? DateTime.now(),
+                      lastDate: DateTime(2021));
+                  if (date != null) {
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(
+                          currentValue ?? DateTime.now()),
+                    );
+                    return DateTimeField.combine(date, time);
+                  } else {
+                    return currentValue;
+                  }
+                },
               ),
-              format: format,
-              onShowPicker: (context, currentValue) async {
-                final date = await showDatePicker(
-                    context: context,
-                    firstDate: currentValue ?? DateTime.now(),
-                    initialDate: currentValue ?? DateTime.now(),
-                    lastDate: DateTime(2021));
-                if (date != null) {
-                  final time = await showTimePicker(
-                    context: context,
-                    initialTime:
-                        TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-                  );
-                  return DateTimeField.combine(date, time);
-                } else {
-                  return currentValue;
-                }
-              },
-            ),
 //            new Row(children: <Widget>[
 //              new Expanded(
 //                  child: new TextFormField(
@@ -152,96 +158,93 @@ class CreateTaskPageState extends State<CreateTaskPage> {
 ////                  : 'Please enter a valid email address',
 ////              onSaved: (val) => newContact.email = val,
 //            ),
-            new FormField<String>(
-              builder: (FormFieldState<String> state) {
-                return InputDecorator(
-                  decoration: InputDecoration(
-                    icon: const Icon(Icons.category),
-                    labelText: 'Category',
-                    errorText: state.hasError ? state.errorText : null,
-                  ),
-                  isEmpty: _categories == '',
-                  child: new DropdownButtonHideUnderline(
-                    child: new DropdownButton<String>(
-                      value: _category,
-                      isDense: true,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          //newContact.favoriteColor = newValue;
-                          _category = newValue;
-                          state.didChange(newValue);
-                        });
-                      },
-                      items: _categories.map((String value) {
-                        return new DropdownMenuItem<String>(
-                          value: value,
-                          child: new Text(value),
-                        );
-                      }).toList(),
+              new FormField<String>(
+                builder: (FormFieldState<String> state) {
+                  return InputDecorator(
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.category),
+                      labelText: 'Category',
+                      errorText: state.hasError ? state.errorText : null,
                     ),
-                  ),
-                );
-              },
-              validator: (val) {
-                return val != '' ? null : 'Please select a category';
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 36.0),
-              child: FlutterTagging<Tag>(
-                initialItems: _selectedTags,
-                textFieldConfiguration: TextFieldConfiguration(
-                  decoration: InputDecoration(
-                    //icon: const Icon(Icons.category),
-                      border: InputBorder.none,
-                      //filled: true,
-                      //fillColor: Colors.grey.withAlpha(30),
-                      hintText: 'Search Tag',
-                      labelText: ' + Add Tag',
-                      labelStyle: TextStyle(
-                          color: Colors.green
-                      )
-                  ),
-//                style: TextStyle(
-//                  color: Colors.green,
-//                )
-                ),
-                findSuggestions: tag_service.getTags,
-                additionCallback: (value) {
-                  return Tag(
-                    text: value,
+                    isEmpty: _categories == '',
+                    child: new DropdownButtonHideUnderline(
+                      child: new DropdownButton<String>(
+                        value: _category,
+                        isDense: true,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            //newContact.favoriteColor = newValue;
+                            _category = newValue;
+                            state.didChange(newValue);
+                          });
+                        },
+                        items: _categories.map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: new Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   );
                 },
-                onAdded: (tag) {
-                  tag_service.addNewTag(tag.text);
-                  return tag;
+                validator: (val) {
+                  return val != '' ? null : 'Please select a category';
                 },
-                configureSuggestion: (tag) {
-                  return SuggestionConfiguration(
-                    title: Text(tag.text),
-                    additionWidget: Chip(
-                      avatar: Icon(
-                        Icons.add_circle,
-                        color: Colors.white,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 36.0),
+                child: FlutterTagging<Tag>(
+                  initialItems: _selectedTags,
+                  enableImmediateSuggestion: true,
+                  suggestionsBoxConfiguration: SuggestionsBoxConfiguration(
+                      suggestionsBoxVerticalOffset: 0),
+                  textFieldConfiguration: TextFieldConfiguration(
+                    decoration: InputDecoration(
+                        //icon: const Icon(Icons.category),
+                        border: InputBorder.none,
+                        //filled: true,
+                        //fillColor: Colors.grey.withAlpha(30),
+                        hintText: 'Search Tag',
+                        labelText: ' + Add Tag',
+                        labelStyle: TextStyle(color: Colors.green)),
+                  ),
+                  findSuggestions: tag_service.getTags,
+                  additionCallback: (value) {
+                    return Tag(
+                      text: value,
+                    );
+                  },
+                  onAdded: (tag) {
+                    tag_service.addNewTag(tag.text);
+                    return tag;
+                  },
+                  configureSuggestion: (tag) {
+                    return SuggestionConfiguration(
+                      title: Text(tag.text),
+                      additionWidget: Chip(
+                        avatar: Icon(
+                          Icons.add_circle,
+                          color: Colors.white,
+                        ),
+                        label: Text('Add New Tag'),
+                        labelStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w300,
+                        ),
+                        backgroundColor: Colors.green,
                       ),
-                      label: Text('Add New Tag'),
-                      labelStyle: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w300,
-                      ),
+                    );
+                  },
+                  configureChip: (tag) {
+                    return ChipConfiguration(
+                      label: Text(tag.text),
                       backgroundColor: Colors.green,
-                    ),
-                  );
-                },
-                configureChip: (tag) {
-                  return ChipConfiguration(
-                    label: Text(tag.text),
-                    backgroundColor: Colors.green,
-                    labelStyle: TextStyle(color: Colors.white),
-                    deleteIconColor: Colors.white,
-                  );
-                },
+                      labelStyle: TextStyle(color: Colors.white),
+                      deleteIconColor: Colors.white,
+                    );
+                  },
 //              onChanged: () {
 //                setState(() {
 //                  _selectedValuesJson = _selectedLanguages
@@ -252,44 +255,55 @@ class CreateTaskPageState extends State<CreateTaskPage> {
 //                      _selectedValuesJson.replaceFirst('}]', '}\n]');
 //                });
 //              },
+                ),
               ),
-            ),
-            new Container(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: new RaisedButton(
-                  child: const Text('Submit'),
-                  //                onPressed: _submitForm,
-                )),
-          ],
+              new Container(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: new RaisedButton(
+                    child: const Text('Submit'),
+                    onPressed: () {
+                      // Validate returns true if the form is valid, or false
+                      // otherwise.
+                      if (_formKey.currentState.validate()) {
+                        print(_selectedTags);
+                        // If the form is valid, display a Snackbar.
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text('Processing Data')));
+                      }
+                    },
+                    //                onPressed: _submitForm,
+                  )),
+            ],
+          ),
+          // /* child: Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: <Widget>[
+          //     TextFormField(
+          //       validator: (value) {
+          //         if (value.isEmpty) {
+          //           return 'Please enter some text';
+          //         }
+          //         return null;
+          //       },
+          //     ),
+          //     Padding(
+          //       padding: const EdgeInsets.symmetric(vertical: 16.0),
+          //       child: RaisedButton(
+          //         onPressed: () {
+          //           // Validate returns true if the form is valid, or false
+          //           // otherwise.
+          //           if (_formKey.currentState.validate()) {
+          //             // If the form is valid, display a Snackbar.
+          //             Scaffold.of(context).showSnackBar(
+          //                 SnackBar(content: Text('Processing Data')));
+          //           }
+          //         },
+          //         child: Text('Submit'),
+          //       ),
+          //     ),
+          //   ],
+          // ), */
         ),
-        // /* child: Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: <Widget>[
-        //     TextFormField(
-        //       validator: (value) {
-        //         if (value.isEmpty) {
-        //           return 'Please enter some text';
-        //         }
-        //         return null;
-        //       },
-        //     ),
-        //     Padding(
-        //       padding: const EdgeInsets.symmetric(vertical: 16.0),
-        //       child: RaisedButton(
-        //         onPressed: () {
-        //           // Validate returns true if the form is valid, or false
-        //           // otherwise.
-        //           if (_formKey.currentState.validate()) {
-        //             // If the form is valid, display a Snackbar.
-        //             Scaffold.of(context).showSnackBar(
-        //                 SnackBar(content: Text('Processing Data')));
-        //           }
-        //         },
-        //         child: Text('Submit'),
-        //       ),
-        //     ),
-        //   ],
-        // ), */
       ),
     );
   }
@@ -297,14 +311,17 @@ class CreateTaskPageState extends State<CreateTaskPage> {
 
 /// TagService
 class TagService {
-
   List<Tag> tags = [];
 
   TagService() {
     Firestore.instance
-        .collection('tags').getDocuments().then((QuerySnapshot snapshot) {
-          snapshot.documents.forEach((f) => tags.add(Tag(id: f.documentID, text: f.data['text'])));
-        });
+        .collection('tags')
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach(
+        (f) => tags.add(Tag(id: f.documentID, text: f.data['text'])),
+      );
+    });
     print("tags");
     print(tags);
   }
@@ -316,9 +333,7 @@ class TagService {
   }
 
   void addNewTag(String name) async {
-    await Firestore.instance
-        .collection('tags')
-        .add({
+    await Firestore.instance.collection('tags').add({
       'text': name,
     });
   }
@@ -339,9 +354,11 @@ class Tag extends Taggable {
   @override
   List<Object> get props => [text];
 
+  @override
+  String toString() => "Tag<$text>";
+
 //  /// Converts the class to json string.
 //  String toJson() => '''  {
 //    "name": $name,\n
 //  }''';
 }
-

@@ -11,7 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'COmunity',
+      title: 'WeHelp',
+      theme: ThemeData(
+        // Use the green theme for Material widgets.
+        primarySwatch: Colors.green,
+      ),
+      darkTheme: ThemeData.dark(),
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(),
@@ -34,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('COmunity')),
+      appBar: AppBar(title: Text('WeHelp')),
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

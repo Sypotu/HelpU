@@ -255,9 +255,9 @@ class CreateTaskPageState extends State<CreateTaskPage> {
               ),
             ),
             new Container(
-                padding: const EdgeInsets.only(left: 40.0, top: 20.0),
+                padding: const EdgeInsets.only(top: 20.0),
                 child: new RaisedButton(
-                  child: const Text('Ask for help'),
+                  child: const Text('Submit'),
                   //                onPressed: _submitForm,
                 )),
           ],

@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'flutter_tag/tagging.dart';
+import 'flutter_tag/taggable.dart';
+import 'flutter_tag/configurations.dart';
+import 'package:flutter_typeahead_web/flutter_typeahead.dart';
 import 'task.dart';
+
+import 'tag.dart';
 
 class TaskDetailPage extends StatelessWidget {
   final Task task;
 
   TaskDetailPage(this.task);
 
+  final TagService tag_service = TagService();
+
   var format = DateFormat("EEE MMMM d', at' HH.mm");
+
+  List<Tag> _selectedTags = [Tag(id:"test",text:"test")];
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +154,25 @@ class TaskDetailPage extends StatelessWidget {
                 ),
 
               ),
+              Wrap(
+              //  alignment: widget.wrapConfiguration.alignment,
+           //     crossAxisAlignment: widget.wrapConfiguration.crossAxisAlignment,
+           //     runAlignment: widget.wrapConfiguration.runAlignment,
+           //     runSpacing: widget.wrapConfiguration.runSpacing,
+           //     spacing: widget.wrapConfiguration.spacing,
+           //     direction: widget.wrapConfiguration.direction,
+           //     textDirection: widget.wrapConfiguration.textDirection,
+          //      verticalDirection: widget.wrapConfiguration.verticalDirection,
+                children: _selectedTags.map<Widget>((item) {
+                  return Chip(
+                    label: Text(item.text),
+                    backgroundColor: Colors.green,
+                    labelStyle: TextStyle(color: Colors.white),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 24),
+              SizedBox(height: 24),
               new Container(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: new RaisedButton(

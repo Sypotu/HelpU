@@ -4,10 +4,12 @@ import 'package:hack/profile_tab.dart';
 import 'package:intl/intl.dart';
 import 'new_task_page.dart';
 import 'task.dart';
+import 'tag.dart';
 import 'task_detail_page.dart';
 import 'dart:math';
 import 'package:flutter_typeahead_web/flutter_typeahead.dart';
 import 'profile_tab.dart';
+import 'dart:io';
 
 void main() => runApp(MyApp());
 
@@ -63,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               ListTile(
-                title: Text('Item 2'),
+                title: Text('Settings'),
                 onTap: () {
                   // Update the state of the app.
                   // ...
@@ -112,6 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildBody(BuildContext context) {
+    final TagService tag_service = TagService();
+
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
           .collection('task')
@@ -120,20 +124,20 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
-        return _buildList(context, snapshot.data.documents);
+        return _buildList(context, snapshot.data.documents, tag_service);
       },
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, TagService tag_service) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+      children: snapshot.map((data) => _buildListItem(context, data, tag_service)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final task = Task.fromSnapshot(data);
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data, TagService tag_service) {
+    final task = Task.fromSnapshot(data,tag_service);
 
     var format = DateFormat("EEE MMMM d', at' HH.mm");
 

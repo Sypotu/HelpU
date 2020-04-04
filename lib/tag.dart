@@ -28,6 +28,13 @@ class TagService {
         .toList();
   }
 
+  Tag getTagById(String id)
+  {
+    print(id);
+    print(tags);
+    return tags.where((tag) => (tag.id == id)).first;
+  }
+
   void addNewTag(String name) async {
     await Firestore.instance.collection('tags').add({
       'text': name,

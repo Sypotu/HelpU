@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'flutter_tag/tagging.dart';
@@ -13,14 +14,15 @@ class TaskDetailPage extends StatelessWidget {
 
   TaskDetailPage(this.task);
 
-  final TagService tag_service = TagService();
+  //final TagService tag_service = TagService();
 
   var format = DateFormat("EEE MMMM d', at' HH.mm");
 
-  List<Tag> _selectedTags = [Tag(id: "test", text: "delivery")];
+  List<Tag> _selectedTags;
 
   @override
   Widget build(BuildContext context) {
+    _selectedTags = task.tags;
     return Scaffold(
       appBar: AppBar(
         title: Text(task.title),
@@ -159,15 +161,15 @@ class TaskDetailPage extends StatelessWidget {
                 //  alignment: widget.wrapConfiguration.alignment,
                 //     crossAxisAlignment: widget.wrapConfiguration.crossAxisAlignment,
                 //     runAlignment: widget.wrapConfiguration.runAlignment,
-                //     runSpacing: widget.wrapConfiguration.runSpacing,
-                //     spacing: widget.wrapConfiguration.spacing,
+                runSpacing: 5,
+                spacing: 5,
                 //     direction: widget.wrapConfiguration.direction,
                 //     textDirection: widget.wrapConfiguration.textDirection,
                 //      verticalDirection: widget.wrapConfiguration.verticalDirection,
                 children: _selectedTags.map<Widget>((item) {
                   return Chip(
                     label: Text(item.text),
-                    backgroundColor: Colors.amber,
+                    backgroundColor: Colors.amber[700],
                     labelStyle: TextStyle(color: Colors.white),
                   );
                 }).toList(),

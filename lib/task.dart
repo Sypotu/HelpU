@@ -17,21 +17,15 @@ class Task {
         description = map['description'],
         timestamp = map['timestamp'],
         id = reference.documentID {
-    print("test");
     tags=[];
     List<dynamic> entitlements = map["tags"];
     entitlements.forEach((entitlement) {
       if (entitlement is DocumentReference) {
-        print(entitlement.documentID);
-       // tag_service.getTagById(entitlement.documentID);
+        tags.add(tag_service.getTagById(entitlement.documentID));
       }else{
         print("strange");
       }
-      print(entitlement);
-      //print(entitlement.documentID);
     });
-//    List<DocumentReference> tags = map["tags"];
-//    print(tags.map((item) => item.documentID));
   }
 
   Task.fromSnapshot(DocumentSnapshot snapshot, TagService tag_ser)

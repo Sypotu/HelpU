@@ -4,20 +4,17 @@ import 'flutter_tag/taggable.dart';
 
 import 'task.dart';
 
+TagService tag_service;
 
 /// TagService
 class TagService {
   List<Tag> tags = [];
 
-  TagService() {
-    Firestore.instance
-        .collection('tags')
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach(
-        (f) => tags.add(Tag(id: f.documentID, text: f.data['text'])),
-      );
-    });
+  TagService(List<DocumentSnapshot> documents) {
+    documents.forEach((f) => [
+          tags.add(Tag(reference: f.reference, text: f.data['text'])),
+          print(tags),
+        ]);
     print("tags");
     print(tags);
   }
@@ -28,11 +25,8 @@ class TagService {
         .toList();
   }
 
-  Tag getTagById(String id)
-  {
-    print(id);
-    print(tags);
-    return tags.where((tag) => (tag.id == id)).first;
+  Tag getTagById(String id) {
+    return tags.where((tag) => (tag.reference.documentID == id)).first;
   }
 
   void addNewTag(String name) async {
@@ -46,11 +40,12 @@ class TagService {
 class Tag extends Taggable {
   ///
   final String text;
-  final String id;
+  //final String id;
+  final DocumentReference reference;
 
   /// Creates Tag
   Tag({
-    this.id,
+    this.reference,
     this.text,
   });
 

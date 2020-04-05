@@ -49,31 +49,33 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(title: Text('HelpU')),
       drawer: Drawer(
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Image(image: AssetImage("assets/logo1.png"),),
-                decoration: BoxDecoration(
-                  color: Colors.indigo,
-                ),
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Image(
+                image: AssetImage("assets/logo1.png"),
               ),
-              ListTile(
-                title: Text('Profile'),
-                onTap: () {
-                  Navigator.pushNamed(context, '/profile');
-                },
+              decoration: BoxDecoration(
+                color: Colors.indigo,
               ),
-              ListTile(
-                title: Text('Settings'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            ],
-          ),
+            ),
+            ListTile(
+              title: Text('Profile'),
+              onTap: () {
+                Navigator.pushNamed(context, '/profile');
+              },
+            ),
+            ListTile(
+              title: Text('Settings'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+          ],
+        ),
       ),
       body: //Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 //        TypeAheadField(
@@ -102,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //            ));
 //          },
 //        ),
-        _buildBody(context),
+          _buildBody(context),
       //]),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -115,30 +117,41 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    final TagService tag_service = TagService();
-
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
-          .collection('task')
-          .orderBy('timestamp', descending: false)
+          .collection('tags')
           .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return LinearProgressIndicator();
+        print("test finished");
+        if (!snapshot.hasData)
+          return LinearProgressIndicator();
+        tag_service = TagService(snapshot.data.documents);
+        return StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance
+              .collection('task')
+              .orderBy('timestamp', descending: false)
+              .snapshots(),
+          builder: (context, snapshot) {
+            print("test finished2");
+            if (!snapshot.hasData)
+              return LinearProgressIndicator();
 
-        return _buildList(context, snapshot.data.documents, tag_service);
+            return _buildList(context, snapshot.data.documents);
+          },
+        );
       },
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, TagService tag_service) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data, tag_service)).toList(),
+      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data, TagService tag_service) {
-    final task = Task.fromSnapshot(data,tag_service);
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final task = Task.fromSnapshot(data, tag_service);
 
     var format = DateFormat("EEE MMMM d', at' HH.mm");
 
@@ -175,7 +188,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(padding: EdgeInsets.only(top: 6.0),),
+                      Padding(
+                        padding: EdgeInsets.only(top: 6.0),
+                      ),
                       Text(
                         task.title,
                         style: TextStyle(
@@ -217,7 +232,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ],
               ),
-
               SizedBox(height: 10),
             ]),
           ),

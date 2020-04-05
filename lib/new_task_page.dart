@@ -65,8 +65,29 @@ class CreateTaskPageState extends State<CreateTaskPage> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 20),
+                SizedBox(height: 30),
+                Text(
+                  "Tell us what you need",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Describe your needs in details so that we can find someone to help you.",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+
+                  ),
+                ),
+                SizedBox(height: 30),
                 new TextFormField(
                   decoration: const InputDecoration(
                     icon: const Icon(Icons.title),

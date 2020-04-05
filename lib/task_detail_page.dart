@@ -25,7 +25,7 @@ class TaskDetailPage extends StatelessWidget {
     _selectedTags = task.tags;
     return Scaffold(
       appBar: AppBar(
-        title: Text(task.title),
+        title: Text("Task Details"),
       ),
       body: Builder(
         builder: (context) => SafeArea(
@@ -102,10 +102,36 @@ class TaskDetailPage extends StatelessWidget {
                     fontWeight: FontWeight.w300,
                   ),
                 ),
+
+                SizedBox(height: 24),
+                Text(
+                  'Category',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Wrap(
+                  //  alignment: widget.wrapConfiguration.alignment,
+                  //     crossAxisAlignment: widget.wrapConfiguration.crossAxisAlignment,
+                  //     runAlignment: widget.wrapConfiguration.runAlignment,
+                  runSpacing: 5,
+                  spacing: 5,
+                  //     direction: widget.wrapConfiguration.direction,
+                  //     textDirection: widget.wrapConfiguration.textDirection,
+                  //      verticalDirection: widget.wrapConfiguration.verticalDirection,
+                  children: _selectedTags.map<Widget>((item) {
+                    return Chip(
+                      label: Text(item.text),
+                      backgroundColor: Colors.amber[800],
+                      labelStyle: TextStyle(color: Colors.white),
+                    );
+                  }).toList(),
+                ),
                 SizedBox(height: 24),
 
                 Text(
-                  'Poster',
+                  'From',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
@@ -150,31 +176,6 @@ class TaskDetailPage extends StatelessWidget {
                   ],
                 ),
 
-                SizedBox(height: 24),
-                Text(
-                  'Category',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Wrap(
-                  //  alignment: widget.wrapConfiguration.alignment,
-                  //     crossAxisAlignment: widget.wrapConfiguration.crossAxisAlignment,
-                  //     runAlignment: widget.wrapConfiguration.runAlignment,
-                  runSpacing: 5,
-                  spacing: 5,
-                  //     direction: widget.wrapConfiguration.direction,
-                  //     textDirection: widget.wrapConfiguration.textDirection,
-                  //      verticalDirection: widget.wrapConfiguration.verticalDirection,
-                  children: _selectedTags.map<Widget>((item) {
-                    return Chip(
-                      label: Text(item.text),
-                      backgroundColor: Colors.amber[800],
-                      labelStyle: TextStyle(color: Colors.white),
-                    );
-                  }).toList(),
-                ),
                 SizedBox(height: 24),
                 Expanded(
                   child: SizedBox(),

@@ -94,7 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
             //unselectedLabelColor: Colors.indigo,
             //labelColor: Colors.indigo,
             labelStyle: TextStyle(
-                //fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
                 ),
 //            indicator: BoxDecoration(
 //  //            borderRadius: BorderRadius.circular(50),
@@ -199,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     labelText: 'Filter',
                     labelStyle: TextStyle(
                       color: Colors.grey[800],
-                      fontSize: 14,
+                      fontSize: 16,
                     )),
               ),
               findSuggestions: tag_service.getTags,
@@ -252,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Padding(
       key: ValueKey(task.title),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
       child: Card(
 //        decoration: BoxDecoration(
 //          border: Border.all(color: Colors.white),
@@ -295,7 +296,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(height: 10),
                       Row(
                         children: <Widget>[
-                          Icon(Icons.access_time),
+                          IconTheme(
+                            data: IconThemeData(color: Colors.grey[600]),
+                            child: Icon(Icons.access_time),
+                          ),
                           Padding(
                             padding: EdgeInsets.only(right: 4.0),
                           ),
@@ -303,13 +307,16 @@ class _MyHomePageState extends State<MyHomePage> {
                             format.format(task.timestamp.toDate()),
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
                               //color: Colors.white,
                             ),
                           ),
                           SizedBox(width: 16),
-                          Icon(Icons.location_on),
+                          IconTheme(
+                            data: IconThemeData(color: Colors.grey[600]),
+                            child: Icon(Icons.location_on),
+                          ),
                           Padding(
                             padding: EdgeInsets.only(right: 4.0),
                           ),
@@ -318,7 +325,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.w300,
+                              fontWeight: FontWeight.w400,
                               //color: Colors.white,
                             ),
                           ),

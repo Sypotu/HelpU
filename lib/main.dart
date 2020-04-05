@@ -11,6 +11,10 @@ import 'dart:math';
 import 'package:flutter_typeahead_web/flutter_typeahead.dart';
 import 'profile_tab.dart';
 import 'dart:io';
+import 'flutter_tag/tagging.dart';
+import 'flutter_tag/taggable.dart';
+import 'flutter_tag/configurations.dart';
+import 'package:flutter_typeahead_web/flutter_typeahead.dart';
 
 void main() => runApp(MyApp());
 
@@ -44,6 +48,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<Tag> _selectedTags;
+  @override
+  void initState() {
+    _selectedTags = [];
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _selectedTags.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,40 +94,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: //Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-//        TypeAheadField(
-////          textFieldConfiguration: TextFieldConfiguration(
-////              autofocus: true,
-//////              style: DefaultTextStyle.of(context).style.copyWith(
-//////                  fontStyle: FontStyle.italic
-//////              ),
-////              decoration: InputDecoration(
-////                  border: OutlineInputBorder()
-////              )
-////          ),
-//          suggestionsCallback: (pattern) async {
-//  //          return await BackendService.getSuggestions(pattern);
-//          },
-//          itemBuilder: (context, suggestion) {
-//            return ListTile(
-//              leading: Icon(Icons.shopping_cart),
-//              title: Text(suggestion['name']),
-//              subtitle: Text('\$${suggestion['price']}'),
-//            );
-//          },
-//          onSuggestionSelected: (suggestion) {
-//            Navigator.of(context).push(MaterialPageRoute(
-//     //           builder: (context) => ProductPage(product: suggestion)
-//            ));
-//          },
-//        ),
-          _buildBody(context),
-      //]),
-      floatingActionButton: FloatingActionButton(
+      body: _buildBody(context),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Create'),
         onPressed: () {
           Navigator.pushNamed(context, '/new_task');
         },
-        child: Icon(Icons.add),
+        icon: Icon(Icons.add),
         backgroundColor: Colors.indigoAccent,
       ),
     );
@@ -118,13 +108,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance
-          .collection('tags')
-          .snapshots(),
+      stream: Firestore.instance.collection('tags').snapshots(),
       builder: (context, snapshot) {
         print("test finished");
-        if (!snapshot.hasData)
-          return LinearProgressIndicator();
+        if (!snapshot.hasData) return LinearProgressIndicator();
         tag_service = TagService(snapshot.data.documents);
         return StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance
@@ -133,8 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
               .snapshots(),
           builder: (context, snapshot) {
             print("test finished2");
-            if (!snapshot.hasData)
-              return LinearProgressIndicator();
+            if (!snapshot.hasData) return LinearProgressIndicator();
 
             return _buildList(context, snapshot.data.documents);
           },
@@ -144,18 +130,103 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView(
-      padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0,
+      child: Scaffold(
+        appBar: TabBar(
+          unselectedLabelColor: Colors.indigo,
+          labelColor: Colors.indigo,
+          labelStyle: TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+//            indicator: BoxDecoration(
+//  //            borderRadius: BorderRadius.circular(50),
+//              color: Colors.indigo),
+          tabs: [
+            Tab(icon: Text("Find a task")),
+            Tab(icon: Text("My tasks")),
+          ],
+        ),
+        body: TabBarView(
+          children: [
+            Column(children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: FlutterTagging<Tag>(
+                  initialItems: _selectedTags,
+                  enableImmediateSuggestion: true,
+                  wrapConfiguration: WrapConfiguration(
+                    runSpacing: 0,
+                  ),
+                  suggestionsBoxConfiguration: SuggestionsBoxConfiguration(
+                    suggestionsBoxVerticalOffset: 0,
+                    direction: AxisDirection.down,
+                    //autoFlipDirection: true,
+                  ),
+                  textFieldConfiguration: TextFieldConfiguration(
+                    decoration: InputDecoration(
+                        //icon: const Icon(Icons.category),
+                        border: InputBorder.none,
+                        //filled: true,
+                        //fillColor: Colors.grey.withAlpha(30),
+                        hintText: 'Type to search a category',
+                        hintStyle: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w300),
+                        labelText: ' Filter by category',
+                        labelStyle: TextStyle(
+                          color: Colors.indigoAccent,
+                          fontSize: 14,
+                        )),
+                  ),
+                  findSuggestions: tag_service.getTags,
+                  configureSuggestion: (tag) {
+                    return SuggestionConfiguration(
+                      title: Text(tag.text),
+                    );
+                  },
+                  configureChip: (tag) {
+                    return ChipConfiguration(
+                      label: Text(tag.text),
+                      backgroundColor: Colors.amber[800],
+                      labelStyle: TextStyle(color: Colors.white),
+                      deleteIconColor: Colors.white,
+                    );
+                  },
+                  onChanged: () => [print(_selectedTags), setState(() {})],
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  //scrollDirection: Axis.vertical,
+                  //shrinkWrap: true,
+                  padding: const EdgeInsets.only(top: 2.0),
+                  children: snapshot
+                      .map((data) => _buildListItem(context, data))
+                      .toList(),
+                ),
+              ),
+            ]),
+            Text("work in progress"),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final task = Task.fromSnapshot(data, tag_service);
+    if (_selectedTags.isNotEmpty) {
+      for(Tag filter in _selectedTags){
+        if(!task.tags.contains(filter)){
+          return SizedBox();
+        }
+      }
+    }
 
     var format = DateFormat("EEE MMMM d', at' HH.mm");
 
-    var color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+    var color = Colors.primaries[Random(task.id.hashCode).nextInt(Colors.primaries.length)];
 
     return Padding(
       key: ValueKey(task.title),
@@ -210,7 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.w200,
+                              fontWeight: FontWeight.w300,
                             ),
                           ),
                           SizedBox(width: 16),
@@ -223,7 +294,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.w200,
+                              fontWeight: FontWeight.w300,
                             ),
                           ),
                         ],

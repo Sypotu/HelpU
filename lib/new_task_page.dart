@@ -54,7 +54,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
 
- //   final TagService tag_service = TagService();
+    //   final TagService tag_service = TagService();
 
     return Scaffold(
       appBar: AppBar(title: Text('Create a Task')),
@@ -78,7 +78,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                 ),
                 inputFormatters: [new LengthLimitingTextInputFormatter(30)],
                 validator: (val) => val.isEmpty ? 'Title is required' : null,
-                onChanged: (val) => selectedTitle=val,
+                onChanged: (val) => selectedTitle = val,
               ),
               SizedBox(height: 12),
               new TextFormField(
@@ -96,7 +96,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                 inputFormatters: [new LengthLimitingTextInputFormatter(500)],
                 validator: (val) =>
                     val.isEmpty ? 'Description is required' : null,
-                onChanged: (val) => selectedDescription=val,
+                onChanged: (val) => selectedDescription = val,
               ),
 
               SizedBox(height: 12),
@@ -128,7 +128,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                     return currentValue;
                   }
                 },
-                onChanged: (val) => selectedTime=val,
+                onChanged: (val) => selectedTime = val,
               ),
 //            new Row(children: <Widget>[
 //              new Expanded(
@@ -187,7 +187,10 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                   initialItems: _selectedTags,
                   enableImmediateSuggestion: true,
                   suggestionsBoxConfiguration: SuggestionsBoxConfiguration(
-                      suggestionsBoxVerticalOffset: 0),
+                    suggestionsBoxVerticalOffset: 0,
+                    direction: AxisDirection.up,
+                    //autoFlipDirection: true,
+                  ),
                   textFieldConfiguration: TextFieldConfiguration(
                     decoration: InputDecoration(
                         //icon: const Icon(Icons.category),
@@ -196,11 +199,12 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                         //fillColor: Colors.grey.withAlpha(30),
                         hintText: 'Type to search a category',
                         hintStyle: TextStyle(
-                          fontSize: 16,fontWeight: FontWeight.w300),
+                            fontSize: 16, fontWeight: FontWeight.w300),
                         labelText: ' + Add Task Categories',
-                        labelStyle: TextStyle(color: Colors.indigoAccent,
-                      fontSize: 16,)),
-
+                        labelStyle: TextStyle(
+                          color: Colors.indigoAccent,
+                          fontSize: 16,
+                        )),
                   ),
                   findSuggestions: tag_service.getTags,
                   additionCallback: (value) {
@@ -246,20 +250,16 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                   child: new RaisedButton(
                     color: Colors.indigoAccent,
                     child: const Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12.0),
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
                       child: Text(
                         'Create',
-
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-
                     ),
-
 
                     onPressed: () {
                       // Validate returns true if the form is valid, or false
@@ -273,7 +273,8 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                         // If the form is valid, display a Snackbar.
                         Scaffold.of(context).showSnackBar(
                             SnackBar(content: Text('Sending ...')));
-                        sendNewTask(selectedTitle, selectedDescription, selectedTime, _selectedTags, context);
+                        sendNewTask(selectedTitle, selectedDescription,
+                            selectedTime, _selectedTags, context);
                       }
                     },
                     //                onPressed: _submitForm,
@@ -314,7 +315,8 @@ class CreateTaskPageState extends State<CreateTaskPage> {
   }
 }
 
-void sendNewTask(String title, String description, DateTime time, List<Tag> tags, BuildContext context) async {
+void sendNewTask(String title, String description, DateTime time,
+    List<Tag> tags, BuildContext context) async {
   print(tags.map((tag) => tag.reference).toList());
   await Firestore.instance.collection('task').add({
     'title': title,

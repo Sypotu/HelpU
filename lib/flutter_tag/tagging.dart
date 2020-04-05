@@ -285,7 +285,7 @@ class _FlutterTaggingState<T extends Taggable>
                 ),
               ),
               onPointerDown: (_) {
-                if (_additionItem != item) {
+                if (_additionItem != item && !widget.initialItems.contains(item)) {
                   setState(() {
                     widget.initialItems.add(item);
                   });
@@ -298,7 +298,7 @@ class _FlutterTaggingState<T extends Taggable>
             );
           },
           onSuggestionSelected: (suggestion) {
-            if (_additionItem != suggestion) {
+            if (_additionItem != suggestion && !widget.initialItems.contains(suggestion)) {
               setState(() {
                 widget.initialItems.add(suggestion);
               });

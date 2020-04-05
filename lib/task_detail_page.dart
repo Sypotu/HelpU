@@ -176,7 +176,9 @@ class TaskDetailPage extends StatelessWidget {
                   }).toList(),
                 ),
                 SizedBox(height: 24),
-
+                Expanded(
+                  child: SizedBox(),
+                ),
                 new Container(
                     padding: const EdgeInsets.only(top: 20.0),
                     child: new RaisedButton(

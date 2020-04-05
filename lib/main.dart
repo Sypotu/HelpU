@@ -18,6 +18,27 @@ import 'package:flutter_typeahead_web/flutter_typeahead.dart';
 
 void main() => runApp(MyApp());
 
+const List<MaterialColor> primaries = <MaterialColor>[
+  Colors.red,
+  Colors.pink,
+  Colors.purple,
+  Colors.deepPurple,
+  Colors.indigo,
+  Colors.blue,
+  Colors.lightBlue,
+  Colors.cyan,
+  Colors.teal,
+  Colors.green,
+  Colors.lightGreen,
+  Colors.lime,
+  Colors.yellow,
+  Colors.amber,
+  Colors.orange,
+  Colors.deepOrange,
+  Colors.brown,
+  Colors.blueGrey,
+];
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -26,6 +47,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         // Use the green theme for Material widgets.
         primarySwatch: Colors.indigo,
+
       ),
       //darkTheme: ThemeData.dark(),
       initialRoute: '/',
@@ -134,6 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
       length: 2,
       initialIndex: 0,
       child: Scaffold(
+        backgroundColor: Colors.grey[200],
         appBar: TabBar(
           unselectedLabelColor: Colors.indigo,
           labelColor: Colors.indigo,
@@ -150,7 +173,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: TabBarView(
           children: [
-            Column(children: [
+            Column(
+                backgroundColor: Colors.grey[200],
+                children: [
               Padding(
                 padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: FlutterTagging<Tag>(
@@ -166,16 +191,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   textFieldConfiguration: TextFieldConfiguration(
                     decoration: InputDecoration(
-                        //icon: const Icon(Icons.category),
+                        icon: const Icon(Icons.filter_list),
                         border: InputBorder.none,
                         //filled: true,
                         //fillColor: Colors.grey.withAlpha(30),
-                        hintText: 'Type to search a category',
+                        hintText: 'Search a category',
                         hintStyle: TextStyle(
                             fontSize: 12, fontWeight: FontWeight.w300),
-                        labelText: ' Filter by category',
+                        labelText: 'Filter',
                         labelStyle: TextStyle(
-                          color: Colors.indigoAccent,
+                          color: Colors.grey[800],
                           fontSize: 14,
                         )),
                   ),
@@ -226,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var format = DateFormat("EEE MMMM d', at' HH.mm");
 
-    var color = Colors.primaries[Random(task.id.hashCode).nextInt(Colors.primaries.length)];
+    var color = primaries[Random(task.id.hashCode).nextInt(primaries.length-1)];
 
     return Padding(
       key: ValueKey(task.title),
@@ -234,8 +259,8 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(16.0),
-          color: color.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(6.0),
+          color: Colors.white,
         ),
         child: InkWell(
           onTap: () {
@@ -252,7 +277,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 children: [
                   IconTheme(
-                    data: IconThemeData(color: color),
+                    data: IconThemeData(color: color[600]),
                     child: Icon(Icons.person_pin, size: 52),
                   ),
                   SizedBox(width: 8),
@@ -265,8 +290,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       Text(
                         task.title,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.w500,
+                          //color: Colors.white,
                         ),
                       ),
                       SizedBox(height: 10),
@@ -282,6 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w300,
+                              //color: Colors.white,
                             ),
                           ),
                           SizedBox(width: 16),
@@ -295,6 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w300,
+                              //color: Colors.white,
                             ),
                           ),
                         ],

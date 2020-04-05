@@ -47,7 +47,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         // Use the green theme for Material widgets.
         primarySwatch: Colors.indigo,
-
       ),
       //darkTheme: ThemeData.dark(),
       initialRoute: '/',
@@ -85,45 +84,65 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('HelpU')),
-      drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Image(
-                image: AssetImage("assets/logo1.png"),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.indigo,
-              ),
-            ),
-            ListTile(
-              title: Text('Profile'),
-              onTap: () {
-                Navigator.pushNamed(context, '/profile');
-              },
-            ),
-            ListTile(
-              title: Text('Settings'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
-          ],
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('HelpU'),
+          bottom: TabBar(
+            //unselectedLabelColor: Colors.indigo,
+            //labelColor: Colors.indigo,
+            labelStyle: TextStyle(
+                //fontWeight: FontWeight.w500,
+                ),
+//            indicator: BoxDecoration(
+//  //            borderRadius: BorderRadius.circular(50),
+//              color: Colors.indigo),
+            tabs: [
+              Tab(icon: Text("Find a task")),
+              Tab(icon: Text("My tasks")),
+            ],
+          ),
         ),
-      ),
-      body: _buildBody(context),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('Create'),
-        onPressed: () {
-          Navigator.pushNamed(context, '/new_task');
-        },
-        icon: Icon(Icons.add),
-        backgroundColor: Colors.indigoAccent,
+        drawer: Drawer(
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Image(
+                  image: AssetImage("assets/logo1.png"),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.indigo,
+                ),
+              ),
+              ListTile(
+                title: Text('Profile'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/profile');
+                },
+              ),
+              ListTile(
+                title: Text('Settings'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+            ],
+          ),
+        ),
+        body: _buildBody(context),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text('Create'),
+          onPressed: () {
+            Navigator.pushNamed(context, '/new_task');
+          },
+          icon: Icon(Icons.add),
+          backgroundColor: Colors.indigoAccent,
+        ),
       ),
     );
   }
@@ -152,98 +171,75 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0,
-      child: Scaffold(
-        backgroundColor: Colors.grey[200],
-        appBar: TabBar(
-          unselectedLabelColor: Colors.indigo,
-          labelColor: Colors.indigo,
-          labelStyle: TextStyle(
-            fontWeight: FontWeight.w500,
+    return TabBarView(
+      children: [
+        Column(children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+            child: FlutterTagging<Tag>(
+              initialItems: _selectedTags,
+              enableImmediateSuggestion: true,
+              wrapConfiguration: WrapConfiguration(
+                runSpacing: 0,
+              ),
+              suggestionsBoxConfiguration: SuggestionsBoxConfiguration(
+                suggestionsBoxVerticalOffset: 0,
+                direction: AxisDirection.down,
+                //autoFlipDirection: true,
+              ),
+              textFieldConfiguration: TextFieldConfiguration(
+                decoration: InputDecoration(
+                    icon: const Icon(Icons.filter_list),
+                    border: InputBorder.none,
+                    //filled: true,
+                    //fillColor: Colors.grey.withAlpha(30),
+                    hintText: 'Search a category',
+                    hintStyle:
+                        TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                    labelText: 'Filter',
+                    labelStyle: TextStyle(
+                      color: Colors.grey[800],
+                      fontSize: 14,
+                    )),
+              ),
+              findSuggestions: tag_service.getTags,
+              configureSuggestion: (tag) {
+                return SuggestionConfiguration(
+                  title: Text(tag.text),
+                );
+              },
+              configureChip: (tag) {
+                return ChipConfiguration(
+                  label: Text(tag.text),
+                  backgroundColor: Colors.amber[800],
+                  labelStyle: TextStyle(color: Colors.white),
+                  deleteIconColor: Colors.white,
+                );
+              },
+              onChanged: () => [print(_selectedTags), setState(() {})],
+            ),
           ),
-//            indicator: BoxDecoration(
-//  //            borderRadius: BorderRadius.circular(50),
-//              color: Colors.indigo),
-          tabs: [
-            Tab(icon: Text("Find a task")),
-            Tab(icon: Text("My tasks")),
-          ],
-        ),
-        body: TabBarView(
-          children: [
-            Column(
-                backgroundColor: Colors.grey[200],
-                children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                child: FlutterTagging<Tag>(
-                  initialItems: _selectedTags,
-                  enableImmediateSuggestion: true,
-                  wrapConfiguration: WrapConfiguration(
-                    runSpacing: 0,
-                  ),
-                  suggestionsBoxConfiguration: SuggestionsBoxConfiguration(
-                    suggestionsBoxVerticalOffset: 0,
-                    direction: AxisDirection.down,
-                    //autoFlipDirection: true,
-                  ),
-                  textFieldConfiguration: TextFieldConfiguration(
-                    decoration: InputDecoration(
-                        icon: const Icon(Icons.filter_list),
-                        border: InputBorder.none,
-                        //filled: true,
-                        //fillColor: Colors.grey.withAlpha(30),
-                        hintText: 'Search a category',
-                        hintStyle: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w300),
-                        labelText: 'Filter',
-                        labelStyle: TextStyle(
-                          color: Colors.grey[800],
-                          fontSize: 14,
-                        )),
-                  ),
-                  findSuggestions: tag_service.getTags,
-                  configureSuggestion: (tag) {
-                    return SuggestionConfiguration(
-                      title: Text(tag.text),
-                    );
-                  },
-                  configureChip: (tag) {
-                    return ChipConfiguration(
-                      label: Text(tag.text),
-                      backgroundColor: Colors.amber[800],
-                      labelStyle: TextStyle(color: Colors.white),
-                      deleteIconColor: Colors.white,
-                    );
-                  },
-                  onChanged: () => [print(_selectedTags), setState(() {})],
-                ),
-              ),
-              Expanded(
-                child: ListView(
-                  //scrollDirection: Axis.vertical,
-                  //shrinkWrap: true,
-                  padding: const EdgeInsets.only(top: 2.0),
-                  children: snapshot
-                      .map((data) => _buildListItem(context, data))
-                      .toList(),
-                ),
-              ),
-            ]),
-            Text("work in progress"),
-          ],
-        ),
-      ),
+          Expanded(
+            child: ListView(
+              //scrollDirection: Axis.vertical,
+              //shrinkWrap: true,
+              padding: const EdgeInsets.only(top: 2.0),
+              children: snapshot
+                  .map((data) => _buildListItem(context, data))
+                  .toList(),
+            ),
+          ),
+        ]),
+        Text("work in progress"),
+      ],
     );
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final task = Task.fromSnapshot(data, tag_service);
     if (_selectedTags.isNotEmpty) {
-      for(Tag filter in _selectedTags){
-        if(!task.tags.contains(filter)){
+      for (Tag filter in _selectedTags) {
+        if (!task.tags.contains(filter)) {
           return SizedBox();
         }
       }
@@ -251,17 +247,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var format = DateFormat("EEE MMMM d', at' HH.mm");
 
-    var color = primaries[Random(task.id.hashCode).nextInt(primaries.length-1)];
+    var color =
+        primaries[Random(task.id.hashCode).nextInt(primaries.length - 1)];
 
     return Padding(
       key: ValueKey(task.title),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(6.0),
-          color: Colors.white,
-        ),
+      child: Card(
+//        decoration: BoxDecoration(
+//          border: Border.all(color: Colors.white),
+//          borderRadius: BorderRadius.circular(6.0),
+//          color: Colors.white,
+//        ),
         child: InkWell(
           onTap: () {
             Navigator.pushNamed(

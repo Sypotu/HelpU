@@ -46,6 +46,10 @@ class CreateTaskPageState extends State<CreateTaskPage> {
     super.dispose();
   }
 
+  DateTime selectedTime;
+  String selectedDescription;
+  String selectedTitle;
+
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -74,7 +78,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                 ),
                 inputFormatters: [new LengthLimitingTextInputFormatter(30)],
                 validator: (val) => val.isEmpty ? 'Title is required' : null,
-                //onSaved: (val) => newContact.name = val,
+                onChanged: (val) => selectedTitle=val,
               ),
               SizedBox(height: 12),
               new TextFormField(
@@ -92,7 +96,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                 inputFormatters: [new LengthLimitingTextInputFormatter(500)],
                 validator: (val) =>
                     val.isEmpty ? 'Description is required' : null,
-                //onSaved: (val) => newContact.name = val,
+                onChanged: (val) => selectedDescription=val,
               ),
 
               SizedBox(height: 12),
@@ -110,7 +114,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                 onShowPicker: (context, currentValue) async {
                   final date = await showDatePicker(
                       context: context,
-                      firstDate: currentValue ?? DateTime.now(),
+                      firstDate: DateTime.now(),
                       initialDate: currentValue ?? DateTime.now(),
                       lastDate: DateTime(2021));
                   if (date != null) {
@@ -124,6 +128,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                     return currentValue;
                   }
                 },
+                onChanged: (val) => selectedTime=val,
               ),
 //            new Row(children: <Widget>[
 //              new Expanded(
@@ -228,7 +233,7 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                   configureChip: (tag) {
                     return ChipConfiguration(
                       label: Text(tag.text),
-                      backgroundColor: Colors.amber,
+                      backgroundColor: Colors.amber[800],
                       labelStyle: TextStyle(color: Colors.white),
                       deleteIconColor: Colors.white,
                     );
@@ -260,10 +265,15 @@ class CreateTaskPageState extends State<CreateTaskPage> {
                       // Validate returns true if the form is valid, or false
                       // otherwise.
                       if (_formKey.currentState.validate()) {
-                        print(_selectedTags);
+//                        print(_selectedTags);
+//                        print(_selectedTags.map((tag) => tag.reference.documentID));
+//                        print(selectedTime);
+//                        print(selectedTitle);
+//                        print(selectedDescription);
                         // If the form is valid, display a Snackbar.
                         Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text('Not implemented')));
+                            SnackBar(content: Text('Sending ...')));
+                        sendNewTask(selectedTitle, selectedDescription, selectedTime, _selectedTags, context);
                       }
                     },
                     //                onPressed: _submitForm,
@@ -302,4 +312,15 @@ class CreateTaskPageState extends State<CreateTaskPage> {
       ),
     );
   }
+}
+
+void sendNewTask(String title, String description, DateTime time, List<Tag> tags, BuildContext context) async {
+  print(tags.map((tag) => tag.reference).toList());
+  await Firestore.instance.collection('task').add({
+    'title': title,
+    'description': description,
+    'timestamp': time,
+    'tags': tags.map((tag) => tag.reference).toList()
+  });
+  Navigator.pop(context);
 }

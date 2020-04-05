@@ -169,7 +169,7 @@ class TaskDetailPage extends StatelessWidget {
                 children: _selectedTags.map<Widget>((item) {
                   return Chip(
                     label: Text(item.text),
-                    backgroundColor: Colors.amber[700],
+                    backgroundColor: Colors.amber[800],
                     labelStyle: TextStyle(color: Colors.white),
                   );
                 }).toList(),
